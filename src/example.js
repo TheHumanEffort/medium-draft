@@ -310,7 +310,7 @@ class App extends React.Component {
 
       this._debouncedOnChange = setTimeout(function() {
         changeCallback(convertToRaw(currentContent));
-      },this.props.debounce || 500);
+      },this.props.debounce || 200);
     };
 
     this.exporter = setRenderOptions({
