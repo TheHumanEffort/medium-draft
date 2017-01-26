@@ -24,12 +24,15 @@ export default (block) => {
       finalClass += `${BASE_BLOCK_CLASS}-todo ${checkedClass}`;
       return finalClass;
     }
+
     case Block.IMAGE:
-      return `${BASE_BLOCK_CLASS} ${BASE_BLOCK_CLASS}-image`;
+      let style = block.getData().get('style');
+      return `${BASE_BLOCK_CLASS} ${BASE_BLOCK_CLASS}-image ${BASE_BLOCK_CLASS}-image__${style || 'center'}`;
     case Block.BLOCKQUOTE_CAPTION: {
       const cls = `${BASE_BLOCK_CLASS} ${BASE_BLOCK_CLASS}-quote`;
       return `${cls} md-RichEditor-blockquote ${BASE_BLOCK_CLASS}-quote-caption`;
     }
+
     default: return BASE_BLOCK_CLASS;
   }
 };

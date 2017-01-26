@@ -1,4 +1,19 @@
 figure.md-block-image {
+  &.md-block-image__left, &.md-block-image__right {
+    max-width: 50%;
+    margin: 10px;
+    position: relative;
+    z-index: 5;
+  }
+  &.md-block-image__left {
+    float: left;
+    margin-left: -100px;
+  }
+  &.md-block-image__right {
+    float: right;
+    margin-right: -100px;
+  }
+
     // margin: 0;
     margin: 10px 0;
     background: #fbfbfb;
@@ -28,6 +43,7 @@ figure.md-block-image {
             text-align: center;
         }
     }
+
 
     .md-block-image-inner-container {
         position: relative;
