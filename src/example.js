@@ -504,6 +504,16 @@ function externalToInternalSideButton(hash) {
       ));
     },
 
+    insertAtomicBlock(key,text) {
+      this.props.setEditorState(
+        AtomicBlockUtils.insertAtomicBlock(
+          this.props.getEditorState(),
+          key,
+          text
+        )
+      )
+    },
+
     onClick() {
       hash.callback(this);
     },
@@ -525,6 +535,7 @@ function externalToInternalSideButton(hash) {
     close: PropTypes.func,
   };
 
+  component.prototype.createEntity = Entity.create.bind(Entity);
   component.propTypes = propTypes;
 
   return { title: hash.name, component }
@@ -551,7 +562,7 @@ export default function MediumDraft(element,field,options) {
   }
 
   return ReactDOM.render(
-    <App onChange={change} debounce={500} sideButtons={ sideButtons } initialState={initialState}/>,
+    <App onChange={change} debounce={200} sideButtons={ sideButtons } initialState={initialState}/>,
     element
   );
 }

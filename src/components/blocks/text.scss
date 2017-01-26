@@ -1,6 +1,8 @@
 .public-DraftEditor-content {
     .md-block-paragraph {
-        margin: 20px 0;
+        & > div {
+          margin: 20px 0;
+        }
 
         &:first-child {
             margin-top: 0;

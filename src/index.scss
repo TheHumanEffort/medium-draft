@@ -57,6 +57,12 @@
   }
 }
 
+.md-block {
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .md-RichEditor-editor .public-DraftStyleDefault-pre {
   background-color: rgba(0, 0, 0, 0.05);
   font-family: 'Inconsolata', 'Menlo', 'Consolas', monospace;

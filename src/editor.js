@@ -100,7 +100,7 @@ class MediumDraftEditor extends React.Component {
   constructor(props) {
     super(props);
 
-    this.focus = () => this._editorNode.focus();
+    this.focus = () => this.refs.editor.focus();
     this.onChange = (editorState) => {
       this.props.onChange(editorState);
     };
@@ -334,7 +334,7 @@ class MediumDraftEditor extends React.Component {
       <div className="md-RichEditor-root">
         <div className={editorClass}>
           <Editor
-            ref={(node) => { this._editorNode = node; }}
+            ref="editor"
             {...this.props}
             editorState={editorState}
             blockRendererFn={this.blockRendererFn}
@@ -363,7 +363,7 @@ class MediumDraftEditor extends React.Component {
           {!disableToolbar && (
             <Toolbar
               ref={(c) => { this.toolbar = c; }}
-              editorNode={this._editorNode}
+              editorNode={this.refs.editor}
               editorState={editorState}
               toggleBlockType={this.toggleBlockType}
               toggleInlineStyle={this.toggleInlineStyle}

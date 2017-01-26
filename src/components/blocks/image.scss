@@ -7,11 +7,17 @@ figure.md-block-image {
   }
   &.md-block-image__left {
     float: left;
-    margin-left: -100px;
   }
   &.md-block-image__right {
     float: right;
-    margin-right: -100px;
+  }
+  &.md-block-image__center {
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  &.md-block-image__full {
+    max-width: 100%;
   }
 
     // margin: 0;
@@ -44,6 +50,13 @@ figure.md-block-image {
         }
     }
 
+.md-block-image-inner-container__operations {
+margin: auto;
+position: absolute;
+text-align: center;
+top: 0;
+width: 100%;
+}
 
     .md-block-image-inner-container {
         position: relative;

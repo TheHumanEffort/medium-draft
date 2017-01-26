@@ -25,16 +25,21 @@ var ImageBlock = React.createClass({
     this.updateStyle('right');
   },
 
+  fullWidth: function () {
+    this.updateStyle('full');
+  },
+
   default: function () {
     this.updateStyle(null);
   },
 
   render() {
     var props = this.props;
+    var m;
     const { block, blockProps } = props;
     const { getEditorState } = blockProps;
     const data = block.getData();
-    const src = data.get('src');
+    var src = data.get('src');
     const currentBlock = getCurrentBlock(getEditorState());
     const className = currentBlock.getKey() === block.getKey() ? 'md-image-is-selected' : '';
 
@@ -42,13 +47,18 @@ var ImageBlock = React.createClass({
     const style = data.get('style');
     if (style) outerClass += ' md-block-image-outer-container__' + style;
 
+    if (m = src.match(/^(https?:\/\/.*?\.imgix\.net\/.*?)\?(.*?)$/)) {
+      src = m[1] + '?w=1600';
+    }
+
     if (src !== null) {
       return (
         <div className={outerClass}>
           <div className="md-block-image-inner-container">
-            <div className="imageOperations" contentEditable="false" suppressContentEditableWarning={true}>
+            <div className="md-block-image-inner-container__operations" contentEditable="false" suppressContentEditableWarning={true}>
               <button onClick={this.floatLeft} disabled={ this.props.block.getData().get('style') == 'left'}>Left </button>
               <button onClick={this.floatRight } disabled={ this.props.block.getData().get('style') == 'right' }>Right  </button>
+              <button onClick={this.fullWidth } disabled={ this.props.block.getData().get('style') == 'full' }>Full  </button>
               <button onClick={this.default} disabled={!this.props.block.getData().get('style')}>Big</button>
             </div>
             <img role="presentation" className={className} src={src} />
