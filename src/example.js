@@ -303,7 +303,7 @@ class App extends React.Component {
         });
       }
 
-      var currentContent = this.state.editorState.getCurrentContent();
+      var currentContent = editorState.getCurrentContent();
       var changeCallback = this.props.onChange;
 
       clearTimeout(this._debouncedOnChange);
@@ -312,12 +312,6 @@ class App extends React.Component {
         changeCallback(convertToRaw(currentContent));
       },this.props.debounce || 200);
     };
-
-    this.exporter = setRenderOptions({
-      styleToHTML,
-      blockToHTML: newBlockToHTML,
-      entityToHTML: newEntityToHTML,
-    });
 
     this.getEditorState = () => this.state.editorState;
 

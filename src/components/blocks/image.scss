@@ -1,4 +1,6 @@
 figure.md-block-image {
+  clear: both;
+
   &.md-block-image__left, &.md-block-image__right {
     max-width: 50%;
     margin: 10px;
