@@ -58,8 +58,8 @@ var ImageBlock = React.createClass({
             <div className="md-block-image-inner-container__operations" contentEditable="false" suppressContentEditableWarning={true}>
               <button onClick={this.floatLeft} disabled={ this.props.block.getData().get('style') == 'left'}>Left </button>
               <button onClick={this.floatRight } disabled={ this.props.block.getData().get('style') == 'right' }>Right  </button>
-              <button onClick={this.fullWidth } disabled={ this.props.block.getData().get('style') == 'full' }>Full  </button>
-              <button onClick={this.default} disabled={!this.props.block.getData().get('style')}>Big</button>
+              <button onClick={this.fullWidth } disabled={ this.props.block.getData().get('style') == 'full' }>Wide</button>
+              <button onClick={this.default} disabled={!this.props.block.getData().get('style')}>Default</button>
             </div>
             <img role="presentation" className={className} src={src} />
           </div>
