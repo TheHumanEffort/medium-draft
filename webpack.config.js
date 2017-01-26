@@ -66,12 +66,12 @@ function getPlugins(env) {
     plugins.push(new ExtractTextPlugin('[name].css'));
     // plugins.push(new ExtractTextPlugin(isDev ? '[name].css' : '[name].[hash].css'));
     plugins.push(hashJsonPlugin);
-    /*    plugins.push(new webpack.optimize.UglifyJsPlugin({
-          sourceMap: true,
+    plugins.push(new webpack.optimize.UglifyJsPlugin({
+          sourceMap: false,
           output: { comments: false },
-          debug: true,
+          debug: false,
           compress: { warnings: false, dead_code: true },
-        }));*/
+        }));
     plugins.push(bannerPlugin);
   }
 
