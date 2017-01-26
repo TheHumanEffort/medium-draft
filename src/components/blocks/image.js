@@ -46,7 +46,7 @@ var ImageBlock = React.createClass({
       return (
         <div className={outerClass}>
           <div className="md-block-image-inner-container">
-            <div className="imageOperations" contentEditable="false">
+            <div className="imageOperations" contentEditable="false" suppressContentEditableWarning={true}>
               <button onClick={this.floatLeft} disabled={ this.props.block.getData().get('style') == 'left'}>Left </button>
               <button onClick={this.floatRight } disabled={ this.props.block.getData().get('style') == 'right' }>Right  </button>
               <button onClick={this.default} disabled={!this.props.block.getData().get('style')}>Big</button>

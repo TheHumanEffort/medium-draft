@@ -1,6 +1,6 @@
 /* eslint-disable */
 
-import React from 'react';
+import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import {
   EditorState,
@@ -31,6 +31,7 @@ import {
   Block,
   keyBindingFn,
   createEditorState,
+  addNewBlock,
   addNewBlockAt,
   beforeInput,
   getCurrentBlock,
@@ -301,18 +302,16 @@ class App extends React.Component {
           }
         });
       }
-    };
 
-    this.sideButtons = [{
-      title: 'Image',
-      component: ImageSideButton,
-    }, {
-      title: 'Embed',
-      component: EmbedSideButton,
-    }, {
-      title: 'Separator',
-      component: SeparatorSideButton,
-    }];
+      var currentContent = this.state.editorState.getCurrentContent();
+      var changeCallback = this.props.onChange;
+
+      clearTimeout(this._debouncedOnChange);
+
+      this._debouncedOnChange = setTimeout(function() {
+        changeCallback(convertToRaw(currentContent));
+      },this.props.debounce || 500);
+    };
 
     this.exporter = setRenderOptions({
       styleToHTML,
@@ -322,11 +321,8 @@ class App extends React.Component {
 
     this.getEditorState = () => this.state.editorState;
 
-    this.logData = this.logData.bind(this);
     this.renderHTML = this.renderHTML.bind(this);
     this.toggleEdit = this.toggleEdit.bind(this);
-    this.fetchData = this.fetchData.bind(this);
-    this.loadSavedData = this.loadSavedData.bind(this);
     this.keyBinding = this.keyBinding.bind(this);
     this.handleKeyCommand = this.handleKeyCommand.bind(this);
     this.handleDroppedFiles = this.handleDroppedFiles.bind(this);
@@ -334,7 +330,12 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    setTimeout(this.fetchData, 1000);
+    this.setState({
+      editorState: createEditorState(this.props.initialState),
+      placeholder: 'Write here...'
+    }, () => {
+      this._editor.focus();
+    })
   }
 
   rendererFn(setEditorState, getEditorState) {
@@ -388,7 +389,6 @@ class App extends React.Component {
   handleKeyCommand(command) {
     if (command === 'editor-save') {
       window.localStorage['editor'] = JSON.stringify(convertToRaw(this.state.editorState.getCurrentContent()));
-      window.ga('send', 'event', 'draftjs', command);
       return true;
     } else if (command === 'load-saved-data') {
       this.loadSavedData();
@@ -399,8 +399,7 @@ class App extends React.Component {
     return false;
   }
 
-  fetchData() {
-    window.ga('send', 'event', 'draftjs', 'load-data', 'ajax');
+  load() {
     this.setState({
       placeholder: 'Loading...',
     });
@@ -415,7 +414,6 @@ class App extends React.Component {
         }, () => {
           this._editor.focus();
         });
-        window.ga('send', 'event', 'draftjs', 'data-success');
       }
     };
     req.send();
@@ -426,7 +424,6 @@ class App extends React.Component {
     const es = convertToRaw(currentContent);
     console.log(es);
     console.log(this.state.editorState.getSelection().toJS());
-    window.ga('send', 'event', 'draftjs', 'log-data');
   }
 
   renderHTML(e) {
@@ -438,31 +435,14 @@ class App extends React.Component {
     newWin.onload = () => newWin.postMessage(eHTML, window.location.origin);
   }
 
-  loadSavedData() {
-    const data = window.localStorage.getItem('editor');
-    if (data === null) {
-      return;
-    }
-    try {
-      const blockData = JSON.parse(data);
-      console.log(blockData);
-      this.onChange( EditorState.push(this.state.editorState, convertFromRaw(blockData)), this._editor.focus);
-    } catch(e) {
-      console.log(e);
-    }
-    window.ga('send', 'event', 'draftjs', 'load-data', 'localstorage');
-  }
-
   toggleEdit(e) {
     this.setState({
       editorEnabled: !this.state.editorEnabled
     }, () => {
-      window.ga('send', 'event', 'draftjs', 'toggle-edit', this.state.editorEnabled + '');
     });
   }
 
   handleDroppedFiles(selection, files) {
-    window.ga('send', 'event', 'draftjs', 'filesdropped', files.length + ' files');
     const file = files[0];
     if (file.type.indexOf('image/') === 0) {
       // eslint-disable-next-line no-undef
@@ -489,11 +469,6 @@ class App extends React.Component {
     const { editorState, editorEnabled } = this.state;
     return (
       <div>
-        <div className="editor-action">
-          <button onClick={this.logData}>Log State</button>
-          <button onClick={this.renderHTML}>Render HTML</button>
-          <button onClick={this.toggleEdit}>Toggle Edit</button>
-        </div>
         <Editor
           ref={(e) => {this._editor = e;}}
           editorState={editorState}
@@ -505,7 +480,7 @@ class App extends React.Component {
           keyBindingFn={this.keyBinding}
           beforeInput={handleBeforeInput}
           handleReturn={this.handleReturn}
-          sideButtons={this.sideButtons}
+          sideButtons={this.props.sideButtons}
           rendererFn={this.rendererFn}
         />
       </div>
@@ -513,12 +488,70 @@ class App extends React.Component {
   }
 };
 
-if (!__PROD__) {
-  window.ga = function() {
-    console.log(arguments);
+function externalToInternalSideButton(hash) {
+  var component = React.createClass({
+    // API for the callback:
+    BLOCK_TYPES: Block,
+
+    done() {
+      this.props.close();
+    },
+
+    insertBlock(type,hash) {
+      this.props.setEditorState(addNewBlock(
+        this.props.getEditorState(),
+        type,hash
+      ));
+    },
+
+    onClick() {
+      hash.callback(this);
+    },
+
+    render() {
+      return (
+        <button className="md-sb-button md-sb-img-button" type="button"
+          onClick={this.onClick}
+          title={hash.label}>
+          <i className={`fa fa-${ hash.icon }`}/>
+        </button>
+      );
+    }
+  });
+
+  const propTypes = {
+    setEditorState: PropTypes.func,
+    getEditorState: PropTypes.func,
+    close: PropTypes.func,
   };
+
+  component.propTypes = propTypes;
+
+  return { title: hash.name, component }
 }
-ReactDOM.render(
-  <App />,
-  document.getElementById('app')
-);
+
+export default function MediumDraft(element,field,options) {
+  let initialState;
+
+  try {
+    if(field.value.length) {
+      initialState = JSON.parse(field.value);
+    }
+  } catch(x) {
+
+  }
+
+  function change(rawState) {
+    field.value = JSON.stringify(rawState);
+  }
+
+  let sideButtons = [];
+  if(options.sideButtons) {
+    sideButtons = options.sideButtons.map(externalToInternalSideButton);
+  }
+
+  return ReactDOM.render(
+    <App onChange={change} debounce={500} sideButtons={ sideButtons } initialState={initialState}/>,
+    element
+  );
+}

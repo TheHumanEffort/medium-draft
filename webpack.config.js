@@ -152,7 +152,7 @@ var options = {
     hotUpdateChunkFilename: 'hot/[id].[hash].hot-update.js',
     hotUpdateMainFilename: 'hot/[hash].hot-update.json',
     library: ['MediumDraft'],
-    libraryTarget: 'umd',
+    libraryTarget: 'var',
   },
   plugins: getPlugins(env),
   module: {
@@ -178,7 +178,9 @@ var options = {
 };
 
 if (isProd) {
-  options.externals = [{
+  options.output.path = 'dist-prod';
+  options.externals = [
+/*    {
       react: {
         root: 'React',
         commonjs2: 'react',
@@ -217,7 +219,7 @@ if (isProd) {
         commonjs: 'draft-js',
         amd: 'draft-js',
       },
-    },
+    },*/
   ];
 }
 
