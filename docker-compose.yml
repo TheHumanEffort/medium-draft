@@ -1,0 +1,7 @@
+app:
+  build: .
+  environment:
+    - NODE_ENV=development
+  volumes:
+    - .:/application
+  command: /package/node_modules/.bin/webpack-dev-server --host 0.0.0.0 --devtool eval --content-base dist/ --progress --colors --hot

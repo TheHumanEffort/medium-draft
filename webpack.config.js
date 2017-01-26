@@ -24,7 +24,7 @@ var pkg = require('./package.json');
 var banner = [
   pkg.name,
   'Version - ' + pkg.version,
-  'Author - ' + pkg.author
+  'Author - ' + pkg.author,
 ].join('\n');
 
 var bannerPlugin = new webpack.BannerPlugin(banner);
@@ -34,7 +34,7 @@ var definePlugin = new webpack.DefinePlugin({
   __PROD__: JSON.stringify(env === ENV_PROD),
   __TEST__: JSON.stringify(env === ENV_TEST),
   __PRERELEASE__: JSON.stringify(JSON.parse(process.env.BUILD_PRERELEASE || 'false')),
-  'process.env.NODE_ENV': '"' +env+ '"'
+  'process.env.NODE_ENV': '"' + env + '"',
 });
 var commonsPlugin = new webpack.optimize.CommonsChunkPlugin({
   name: 'common',
@@ -48,11 +48,11 @@ var vendorPlugin = new webpack.optimize.CommonsChunkPlugin({
   // filename: isDev ? '[name].js' : '[name].[hash].js'
 });
 
-var hashJsonPlugin = function() {
-  this.plugin("done", function(stats) {
-    require("fs").writeFileSync(
-      path.join(__dirname, "hash.json"),
-      JSON.stringify(stats.toJson()["assetsByChunkName"]));
+var hashJsonPlugin = function () {
+  this.plugin('done', function (stats) {
+    require('fs').writeFileSync(
+      path.join(__dirname, 'hash.json'),
+      JSON.stringify(stats.toJson()['assetsByChunkName']));
   });
 };
 
@@ -70,13 +70,13 @@ function getPlugins(env) {
       sourceMap: false,
       output: { comments: false },
       debug: false,
-      compress: { warnings: false, dead_code: true }
+      compress: { warnings: false, dead_code: true },
     }));
     plugins.push(bannerPlugin);
   }
+
   return plugins;
 }
-
 
 function getEntry(env) {
   var entry = {};
@@ -88,11 +88,12 @@ function getEntry(env) {
       'react-dom',
       'immutable',
       'draft-js',
-    ]
+    ];
     entries.push('./index');
   } else {
     entries = ['./index'];
   }
+
   entry['medium-draft'] = entries;
   entry.example = './example';
   entry['basic'] = './basic.scss';
@@ -105,7 +106,7 @@ function getLoaders(env) {
     test: /\.jsx?$/,
     include: APP_DIR,
     loader: env !== ENV_PROD ? 'react-hot-loader!babel-loader' : 'babel-loader',
-    exclude: /node_modules/
+    exclude: /node_modules/,
   });
 
   // loaders.push({
@@ -117,25 +118,25 @@ function getLoaders(env) {
 
   loaders.push({
     test: /\.(jpe?g|png|gif|svg)$/i,
-    loader: 'file-loader'
+    loader: 'file-loader',
   });
 
   loaders.push({ test: /\.json$/, loader: 'json-loader' });
 
-  if (env === ENV_PROD ) {
+  if (env === ENV_PROD) {
     loaders.push({
       test: /(\.css|\.scss)$/,
-      loader: ExtractTextPlugin.extract("css-loader?sourceMap!sass-loader?sourceMap")
+      loader: ExtractTextPlugin.extract('css-loader?sourceMap!sass-loader?sourceMap'),
     });
   } else {
     loaders.push({
       test: /(\.css|\.scss)$/,
-      loaders: ['style-loader', 'css-loader?sourceMap', 'sass-loader?sourceMap']
+      loaders: ['style-loader', 'css-loader?sourceMap', 'sass-loader?sourceMap'],
     });
   }
+
   return loaders;
 }
-
 
 var options = {
   context: APP_DIR,
@@ -160,11 +161,17 @@ var options = {
   resolve: {
     modules: [
       APP_DIR,
-      'node_modules'
+      process.env.NODE_PATH,
     ],
     extensions: ['.js', '.jsx'],
   },
+  resolveLoader: {
+    modules: [
+      process.env.NODE_PATH,
+    ],
+  },
   devServer: {
+    port: 80,
     historyApiFallback: false,
     noInfo: false,
   },
@@ -176,41 +183,41 @@ if (isProd) {
         root: 'React',
         commonjs2: 'react',
         commonjs: 'react',
-        amd: 'react'
-      }
+        amd: 'react',
+      },
     },
     {
       'react-dom': {
         root: 'ReactDOM',
         commonjs2: 'react-dom',
         commonjs: 'react-dom',
-        amd: 'react-dom'
-      }
+        amd: 'react-dom',
+      },
     },
     {
       'react-addons-css-transition-group': {
-        root: ['React','addons','CSSTransitionGroup'],
+        root: ['React', 'addons', 'CSSTransitionGroup'],
         commonjs2: 'react-addons-css-transition-group',
         commonjs: 'react-addons-css-transition-group',
         amd: 'react-addons-css-transition-group',
-      }
+      },
     },
     {
       immutable: {
         root: 'Immutable',
         commonjs2: 'immutable',
         commonjs: 'immutable',
-        amd: 'immutable'
-      }
+        amd: 'immutable',
+      },
     },
     {
       'draft-js': {
         root: 'Draft',
         commonjs2: 'draft-js',
         commonjs: 'draft-js',
-        amd: 'draft-js'
-      }
-    }
+        amd: 'draft-js',
+      },
+    },
   ];
 }
 
@@ -227,16 +234,16 @@ if (appExportType === 'exporter') {
       root: 'ReactDOMServer',
       commonjs2: 'react-dom/server',
       commonjs: 'react-dom/server',
-      amd: 'react-dom/server'
-    }
+      amd: 'react-dom/server',
+    },
   });
   options.externals.push({
     'draft-convert': {
       root: 'DraftConvert',
       commonjs2: 'draft-convert',
       commonjs: 'draft-convert',
-      amd: 'draft-convert'
-    }
+      amd: 'draft-convert',
+    },
   });
 }
 
