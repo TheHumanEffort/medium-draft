@@ -38,19 +38,23 @@ export default class AddButton extends React.Component {
       this.hideBlock();
       return;
     }
+
     const block = contentState.getBlockForKey(selectionState.anchorKey);
     const bkey = block.getKey();
     if (block.getLength() > 0) {
       this.hideBlock();
       return;
     }
+
     if (block.getType() !== this.blockType) {
       this.blockType = block.getType();
       if (block.getLength() === 0) {
         setTimeout(this.findNode, 0);
       }
+
       return;
     }
+
     if (this.blockKey === bkey) {
       // console.log('block exists');
       if (block.getLength() > 0) {
@@ -60,14 +64,17 @@ export default class AddButton extends React.Component {
           visible: true,
         });
       }
+
       return;
     }
+
     this.blockKey = bkey;
     if (block.getLength() > 0) {
       // console.log('no len');
       this.hideBlock();
       return;
     }
+
     setTimeout(this.findNode, 0);
   }
 
@@ -119,6 +126,7 @@ export default class AddButton extends React.Component {
       // console.log('Node exists');
       return;
     }
+
     if (!node) {
       // console.log('no node');
       this.setState({
@@ -172,6 +180,7 @@ export default class AddButton extends React.Component {
         </div>
       );
     }
+
     return null;
   }
 }
