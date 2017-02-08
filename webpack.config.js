@@ -40,16 +40,18 @@ var commonsPlugin = new webpack.optimize.CommonsChunkPlugin({
   name: 'common',
   minChunks: 3,
 });
+
 // var vendorBase = new webpack.optimize.CommonsChunkPlugin("vendor-base", "vendor-base.js", Infinity);
 var vendorPlugin = new webpack.optimize.CommonsChunkPlugin({
   names: ['vendor-react'],
   minChunks: Infinity,
   filename: '[name].js',
+
   // filename: isDev ? '[name].js' : '[name].[hash].js'
 });
 
-var hashJsonPlugin = function () {
-  this.plugin('done', function (stats) {
+var hashJsonPlugin = function() {
+  this.plugin('done', function(stats) {
     require('fs').writeFileSync(
       path.join(__dirname, 'hash.json'),
       JSON.stringify(stats.toJson()['assetsByChunkName']));
@@ -64,6 +66,7 @@ function getPlugins(env) {
     plugins.push(commonsPlugin);
   } else {
     plugins.push(new ExtractTextPlugin('[name].css'));
+
     // plugins.push(new ExtractTextPlugin(isDev ? '[name].css' : '[name].[hash].css'));
     plugins.push(hashJsonPlugin);
     plugins.push(new webpack.optimize.UglifyJsPlugin({
@@ -147,6 +150,7 @@ var options = {
     path: BUILD_DIR,
     publicPath: '/static/',
     filename: '[name].js',
+
     // filename: env === ENV_DEV ? '[name].js' : '[name].[hash].js',
     chunkFilename: '[id].[hash].bundle.js',
     hotUpdateChunkFilename: 'hot/[id].[hash].hot-update.js',
@@ -179,8 +183,12 @@ var options = {
 
 if (isProd) {
   options.output.path = 'dist-prod';
-  options.externals = [
-/*    {
+  /*  options.externals = {
+      react: 'React',
+      'react-dom': 'ReactDOM',
+    }; */
+  /*  options.externals = [
+   {
       react: {
         root: 'React',
         commonjs2: 'react',
@@ -196,7 +204,7 @@ if (isProd) {
         amd: 'react-dom',
       },
     },
-    {
+/*     {
       'react-addons-css-transition-group': {
         root: ['React', 'addons', 'CSSTransitionGroup'],
         commonjs2: 'react-addons-css-transition-group',
@@ -219,8 +227,8 @@ if (isProd) {
         commonjs: 'draft-js',
         amd: 'draft-js',
       },
-    },*/
-  ];
+    },  ];*/
+
 }
 
 var appExportType = process.env.APP_EXPORT_TYPE || '';

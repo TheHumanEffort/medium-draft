@@ -5,8 +5,8 @@
   "main": "lib/index.js",
   "scripts": {
     "clean": "rm -f dist/*.js && rm -f dist/*.css && rm -rf lib",
-    "dev": "mkdir -p dist && cp index.html dist/index.html && cp rendered.html dist/rendered.html && cp docs/data.json dist/data.json && NODE_ENV=development webpack-dev-server --host 0.0.0.0 --devtool eval --content-base dist/ --progress --colors --hot",
-    "build": "npm run clean && npm run test && NODE_ENV=production webpack --progress --colors && mv dist/example.css dist/medium-draft.css",
+    "dev": "mkdir -p dist && cp index.html dist/index.html && cp rendered.html dist/rendered.html && /package/node_modules/.bin/webpack-dev-server --host 0.0.0.0 --devtool eval --content-base dist/ --progress --colors --hot",
+    "build": "npm run clean && NODE_ENV=production /package/node_modules/.bin/webpack --progress --colors",
     "babel": "./node_modules/.bin/babel ./src -d lib --ignore '*.spec.js,example.js'",
     "copyCss": "cp dist/medium-draft.css ./lib/index.css && cp dist/basic.css lib/",
     "buildExporter": "NODE_ENV=production APP_EXPORT_TYPE=exporter webpack --progress --colors",
