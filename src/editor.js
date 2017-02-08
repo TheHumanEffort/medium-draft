@@ -100,7 +100,11 @@ class MediumDraftEditor extends React.Component {
   constructor(props) {
     super(props);
 
-    this.focus = () => this.refs.editor.focus();
+    this.focus = () => {
+      let scroll = document.body.scrollTop;
+      this.refs.editor.focus();
+      document.body.scrollTop = scroll;
+    }
     this.onChange = (editorState) => {
       this.props.onChange(editorState);
     };
