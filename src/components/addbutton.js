@@ -129,10 +129,10 @@ export default class AddButton extends React.Component {
 
     if (!node) {
       // console.log('no node');
-      this.setState({
-        visible: false,
-        isOpen: false,
-      });
+      /*      this.setState({
+              visible: false,
+              isOpen: false,
+            }); */
       return;
     }
     // const rect = node.getBoundingClientRect();
