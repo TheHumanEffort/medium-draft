@@ -48,7 +48,6 @@ import {
   styleToHTML,
 } from './exporter';
 
-
 const newTypeMap = StringToTypeMap;
 newTypeMap['2.'] = Block.OL;
 
@@ -72,9 +71,10 @@ const newBlockToHTML = (block) => {
         end: '</figure>',
       };
     } else if (block.text === '-') {
-      return <div className="md-block-atomic md-block-atomic-break"><hr/></div>;
+      return <div className='md-block-atomic md-block-atomic-break'><hr/></div>;
     }
   }
+
   return blockToHTML(block);
 };
 
@@ -83,15 +83,16 @@ const newEntityToHTML = (entity, originalText) => {
     return (
       <div>
         <a
-          className="embedly-card"
+          className='embedly-card'
           href={entity.data.url}
-          data-card-controls="0"
-          data-card-theme="dark"
+          data-card-controls='0'
+          data-card-theme='dark'
         >Embedded ― {entity.data.url}
         </a>
       </div>
     );
   }
+
   return entityToHTML(entity, originalText);
 };
 
@@ -112,12 +113,13 @@ const handleBeforeInput = (editorState, str, onChange) => {
       } else {
         onChange(EditorState.push(editorState, Modifier.insertText(contentState, selectionState, (str === '"' ? DQUOTE_START : SQUOTE_START)), 'transpose-characters'));
       }
+
       return HANDLED;
     }
   }
+
   return beforeInput(editorState, str, onChange, newTypeMap);
 };
-
 
 class SeparatorSideButton extends React.Component {
   constructor(props) {
@@ -140,17 +142,16 @@ class SeparatorSideButton extends React.Component {
   render() {
     return (
       <button
-        className="md-sb-button md-sb-img-button"
-        type="button"
-        title="Add a separator"
+        className='md-sb-button md-sb-img-button'
+        type='button'
+        title='Add a separator'
         onClick={this.onClick}
       >
-        <i className="fa fa-minus" />
+        <i className='fa fa-minus' />
       </button>
     );
   }
 }
-
 
 class EmbedSideButton extends React.Component {
 
@@ -167,11 +168,12 @@ class EmbedSideButton extends React.Component {
   }
 
   onClick() {
-    const url = window.prompt('Enter a URL', 'https://www.youtube.com/watch?v=PMNFaAUs2mo');
+    const url = window.prompt('Enter a URL', 'https://www.youtube.com/watch?v=5nk2HGj3vqY');
     this.props.close();
     if (!url) {
       return;
     }
+
     this.addEmbedURL(url);
   }
 
@@ -189,18 +191,17 @@ class EmbedSideButton extends React.Component {
   render() {
     return (
       <button
-        className="md-sb-button md-sb-img-button"
-        type="button"
-        title="Add an Embed"
+        className='md-sb-button md-sb-img-button'
+        type='button'
+        title='Add an Embed'
         onClick={this.onClick}
       >
-        <i className="fa fa-code" />
+        <i className='fa fa-code' />
       </button>
     );
   }
 
 }
-
 
 class AtomicEmbedComponent extends React.Component {
 
@@ -235,6 +236,7 @@ class AtomicEmbedComponent extends React.Component {
     script.onload = () => {
       window.embedly();
     };
+
     document.body.appendChild(script);
   }
 
@@ -256,7 +258,7 @@ class AtomicEmbedComponent extends React.Component {
     const { url } = this.props.data;
     const innerHTML = `<div><a class="embedly-card" href="${url}" data-card-controls="0" data-card-theme="dark">Embedded ― ${url}</a></div>`;
     return (
-      <div className="md-block-atomic-embed">
+      <div className='md-block-atomic-embed'>
         <div dangerouslySetInnerHTML={{ __html: innerHTML }} />
       </div>
     );
@@ -280,9 +282,9 @@ const AtomicBlock = (props) => {
       </div>
     );
   }
+
   return <p>Block of type <b>{type}</b> is not supported.</p>;
 };
-
 
 class App extends React.Component {
   constructor(props) {
@@ -310,7 +312,7 @@ class App extends React.Component {
 
       this._debouncedOnChange = setTimeout(function() {
         changeCallback(convertToRaw(currentContent));
-      },this.props.debounce || 200);
+      }, this.props.debounce || 200);
     };
 
     this.getEditorState = () => this.state.editorState;
@@ -326,10 +328,10 @@ class App extends React.Component {
   componentDidMount() {
     this.setState({
       editorState: createEditorState(this.props.initialState),
-      placeholder: 'Write here...'
+      placeholder: 'Write here...',
     }, () => {
       this._editor.focus();
-    })
+    });
   }
 
   rendererFn(setEditorState, getEditorState) {
@@ -340,7 +342,7 @@ class App extends React.Component {
     const rFnOld = rendererFn(setEditorState, getEditorState);
     const rFnNew = (contentBlock) => {
       const type = contentBlock.getType();
-      switch(type) {
+      switch (type) {
         case Block.ATOMIC:
           return {
             component: AtomicBlock,
@@ -352,6 +354,7 @@ class App extends React.Component {
         default: return rFnOld(contentBlock);
       }
     };
+
     return rFnNew;
   }
 
@@ -360,23 +363,28 @@ class App extends React.Component {
       if (e.which === 83) {  /* Key S */
         return 'editor-save';
       }
+
       // else if (e.which === 74 /* Key J */) {
       //  return 'do-nothing';
       //}
     }
+
     if (e.altKey === true) {
       if (e.shiftKey === true) {
         switch (e.which) {
           /* Alt + Shift + L */
           case 76: return 'load-saved-data';
           /* Key E */
+
           // case 69: return 'toggle-edit-mode';
         }
       }
+
       if (e.which === 72 /* Key H */) {
         return 'toggleinline:HIGHLIGHT';
       }
     }
+
     return keyBindingFn(e);
   }
 
@@ -390,6 +398,7 @@ class App extends React.Component {
     } else if (command === 'toggle-edit-mode') {
       this.toggleEdit();
     }
+
     return false;
   }
 
@@ -404,12 +413,13 @@ class App extends React.Component {
         const data = JSON.parse(req.responseText);
         this.setState({
           editorState: createEditorState(data),
-          placeholder: 'Write here...'
+          placeholder: 'Write here...',
         }, () => {
           this._editor.focus();
         });
       }
     };
+
     req.send();
   }
 
@@ -425,13 +435,13 @@ class App extends React.Component {
     const eHTML = this.exporter(currentContent);
     var newWin = window.open(
       `${window.location.pathname}rendered.html`,
-      'windowName',`height=${window.screen.height},width=${window.screen.wdith}`);
+      'windowName', `height=${window.screen.height},width=${window.screen.wdith}`);
     newWin.onload = () => newWin.postMessage(eHTML, window.location.origin);
   }
 
   toggleEdit(e) {
     this.setState({
-      editorEnabled: !this.state.editorEnabled
+      editorEnabled: !this.state.editorEnabled,
     }, () => {
     });
   }
@@ -450,7 +460,8 @@ class App extends React.Component {
       ));
       return HANDLED;
     }
-    return NOT_HANDLED
+
+    return NOT_HANDLED;
   }
 
   handleReturn(e) {
@@ -465,6 +476,7 @@ class App extends React.Component {
       <div>
         <Editor
           ref={(e) => {this._editor = e;}}
+
           editorState={editorState}
           onChange={this.onChange}
           editorEnabled={editorEnabled}
@@ -473,76 +485,82 @@ class App extends React.Component {
           placeholder={this.state.placeholder}
           keyBindingFn={this.keyBinding}
           beforeInput={handleBeforeInput}
-          handleReturn={this.handleReturn}
-          sideButtons={this.props.sideButtons}
-          rendererFn={this.rendererFn}
+      handleReturn={this.handleReturn}
+      sideButtons={this.props.sideButtons}
+      rendererFn={this.rendererFn}
         />
-      </div>
+        </div>
     );
   }
 };
 
 function externalToInternalSideButton(hash) {
-  var component = React.createClass({
-    // API for the callback:
-    BLOCK_TYPES: Block,
+  if (hash.type) {
+    if (hash.type == 'embed') {
+      return { title: 'Embed', component: EmbedSideButton };
+    }
+  } else {
+    var component = React.createClass({
+      // API for the callback:
+      BLOCK_TYPES: Block,
 
-    done() {
-      this.props.close();
-    },
+      done() {
+        this.props.close();
+      },
 
-    insertBlock(type,hash) {
-      this.props.setEditorState(addNewBlock(
-        this.props.getEditorState(),
-        type,hash
-      ));
-    },
-
-    insertAtomicBlock(key,text) {
-      this.props.setEditorState(
-        AtomicBlockUtils.insertAtomicBlock(
+      insertBlock(type, hash) {
+        this.props.setEditorState(addNewBlock(
           this.props.getEditorState(),
-          key,
-          text
-        )
-      )
-    },
+          type, hash
+        ));
+      },
 
-    onClick() {
-      hash.callback(this);
-    },
+      insertAtomicBlock(key, text) {
+        this.props.setEditorState(
+          AtomicBlockUtils.insertAtomicBlock(
+            this.props.getEditorState(),
+            key,
+            text
+          )
+        );
+      },
 
-    render() {
-      return (
-        <button className="md-sb-button md-sb-img-button" type="button"
+      onClick() {
+        hash.callback(this);
+      },
+
+      render() {
+        return (
+            <button className='md-sb-button md-sb-img-button' type='button'
           onClick={this.onClick}
           title={hash.label}>
-          <i className={`fa fa-${ hash.icon }`}/>
-        </button>
-      );
-    }
-  });
+            <i className={`fa fa-${ hash.icon }`}/>
+            </button>
+        );
+      },
+    });
 
-  const propTypes = {
-    setEditorState: PropTypes.func,
-    getEditorState: PropTypes.func,
-    close: PropTypes.func,
-  };
+    const propTypes = {
+      setEditorState: PropTypes.func,
+      getEditorState: PropTypes.func,
+      close: PropTypes.func,
+    };
 
-  component.prototype.createEntity = Entity.create.bind(Entity);
-  component.propTypes = propTypes;
+    component.prototype.createEntity = Entity.create.bind(Entity);
+    component.propTypes = propTypes;
 
-  return { title: hash.name, component }
+    return { title: hash.name, component };
+  }
 }
 
-export default function MediumDraft(element,field,options) {
+export default function MediumDraft(element, field, options) {
   let initialState;
 
   try {
-    if(field.value.length) {
+    if (field.value.length) {
       initialState = JSON.parse(field.value);
     }
-  } catch(x) {
+  } catch (x) {
 
   }
 
@@ -551,7 +569,7 @@ export default function MediumDraft(element,field,options) {
   }
 
   let sideButtons = [];
-  if(options.sideButtons) {
+  if (options.sideButtons) {
     sideButtons = options.sideButtons.map(externalToInternalSideButton);
   }
 
