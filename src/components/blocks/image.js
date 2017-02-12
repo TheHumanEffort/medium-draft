@@ -57,7 +57,10 @@ var ImageBlock = React.createClass({
   },
 
   setSubject: function(e) {
-    this.setState({ settingSubject: true });
+    if (this.state.settingSubject == false)
+      this.setState({ settingSubject: true });
+    else
+      this.setState({settingSubject: false });
 
     e.stopPropagation();
     e.preventDefault();
@@ -72,7 +75,7 @@ var ImageBlock = React.createClass({
         subjectX: x, subjectY: y,
       });
 
-      this.setState({ settingFocus: false });
+      this.setState({ settingSubject: false });
 
       e.stopPropagation();
       e.preventDefault();
@@ -95,7 +98,7 @@ var ImageBlock = React.createClass({
     };
 
     return (
-        <div className='subject-highlight' style={ style }>Subject</div>
+        <div contentEditable='false' suppressContentEditableWarning={true} className='subject-highlight' style={ style }>Subject</div>
     );
   },
 
@@ -113,7 +116,7 @@ var ImageBlock = React.createClass({
     const style = data.get('style');
     if (style) outerClass += ' md-block-image-outer-container__' + style;
 
-    if (m = src.match(/^(https?:\/\/.*?\.imgix\.net\/.*?)\?(.*?)$/)) {
+    if (src && (m = src.match(/^(https?:\/\/.*?\.imgix\.net\/.*?)\?(.*?)$/))) {
       src = m[1] + '?w=1600';
     }
 
@@ -126,7 +129,7 @@ var ImageBlock = React.createClass({
               <button onClick={this.floatRight } disabled={ style == 'right' }>Right  </button>
               <button onClick={this.fullWidth } disabled={ style == 'full' }>Wide</button>
               <button onClick={this.default} disabled={!style}>Default</button>
-              <button onClick={this.setSubject}>Set Focus</button>
+          <button onClick={this.setSubject}>{ this.state.settingSubject ? 'Click on Subject' : 'Set Subject' }</button>
           </div>
           { this.subjectBox() }
             <img role='presentation' className={className} src={src} />
