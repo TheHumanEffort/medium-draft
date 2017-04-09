@@ -97,8 +97,7 @@ function getEntry(env) {
     entries = ['./index'];
   }
 
-  entry['medium-draft'] = entries;
-  entry.example = './example';
+  entry['medium-draft'] = './example';
   entry['basic'] = './basic.scss';
   return entry;
 }
